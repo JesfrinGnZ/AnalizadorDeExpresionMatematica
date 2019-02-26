@@ -3,10 +3,10 @@
 
 char *numeroActual,*copiaDeNumero;
 int tamanoDeNumero=0;
-char hayNumeroPorGuardar=0;
-char *caracteresDeEspacio ={'\n','\t','\r',' '};
-char *digitos= {'0','1','2','3','4','5','6','7','8','9','.'};
-char *simbolos={'+','-','*','/'};
+int hayNumeroPorGuardar=0;
+char caracteresDeEspacio[] ={'\n','\t','\r',' '};
+char digitos[]= {'0','1','2','3','4','5','6','7','8','9','.'};
+char simbolos[]={'+','-','*','/','(',')'};
 
 
 char buscarSiCaracterEsUnEspacio(char caracter){
@@ -43,9 +43,8 @@ void liberarMemoria(){
 }
 
 void guardarPrimerCaracterDeNumero(char caracter){
+    hayNumeroPorGuardar=1;
     tamanoDeNumero++;
-    free(numeroActual);//Se libera el espacio de memoria que se tenia usado actualmente
-    free(copiaDeNumero);
     numeroActual = malloc(tamanoDeNumero*sizeof(char));//Se crea el espacio para solo un caracter
     numeroActual[0]=caracter;
 }
@@ -64,6 +63,9 @@ void guardarEnesimoCaracterDeNumero(char caracter){
 
 void convertirNumeroA_Decimal(){
     printf("Se ha transformado el numero------->%f\n",atof(numeroActual));
+    //liberarMemoria();
+    tamanoDeNumero=0;
+    hayNumeroPorGuardar=0;
 }
 
 void lecturaDeCaracteres(){
@@ -74,42 +76,36 @@ void lecturaDeCaracteres(){
 
 	archivo = fopen("prueba.txt","r");
 
-	if (archivo == NULL)
-        {
+	if (archivo == NULL){
             printf("\nError de apertura del archivo. \n\n");
-        }
-        else
-        {
-            printf("\nEl contenido del archivo de prueba es \n\n");
-            while((caracter = fgetc(archivo)) != EOF)
-	    {
+    }
+    else{
+        printf("\nEl contenido del archivo de prueba es \n\n");
+        while((caracter = fgetc(archivo)) != EOF){
 		//printf("%c",caracter);
-		if(caracter!=' ' && caracter!='\t'&& caracter!='\n'&& caracter!='\r'){
-            caracterAnterior=caracter;
-		}
-		printf("Caracter ANTERIOR::::::::::%c\n",caracterAnterior);
-		if(caracter!= '+' && caracter!= '-' && caracter!= '*' && caracter!= '/' && caracter!= '(' && caracter!= ')'){
-                if(tamanoDeNumero==0){
-                    hayNumeroPorGuardar=1;
-                    guardarPrimerCaracterDeNumero(caracter);
-                }else{
-                    guardarEnesimoCaracterDeNumero(caracter);
+
+
+            if(buscarSiCaracterEsUnEspacio(caracter)=='0'){//Caracter no es un espacio
+                if(buscarSiCaracterEsUnSimbolo(caracter)=='1'){//Caracter es un simbolo
+                    if(hayNumeroPorGuardar==1){//Convertir el numero, colocarlo en la pila, volver valores a su estado inicial
+                        convertirNumeroA_Decimal();
+                    }
+                    printf("Es un simbolo:%c\n",caracter);//Guardar el simbolo
+                }else{//Caracter es un digito o un punto
+                    if(tamanoDeNumero==0){
+                        guardarPrimerCaracterDeNumero(caracter);
+                    }else{
+                        guardarEnesimoCaracterDeNumero(caracter);
+                    }
                 }
+            }else{//Caracter es un espacio
+                if(hayNumeroPorGuardar==1){//Convertir el numero, colocarlo en la pila, volver valores a su estado inicial
+                    convertirNumeroA_Decimal();
+                }
+            }
 
-		}else{
-		    if(hayNumeroPorGuardar==1){
-                convertirNumeroA_Decimal();
-                tamanoDeNumero=0;
-                hayNumeroPorGuardar=0;
-		    }//Si o si se concatena el signo
-
-		}
-	    }
         }
-        if(caracterAnterior== '0' || caracterAnterior== '1' || caracterAnterior== '2' || caracterAnterior== '3' || caracterAnterior== '4' || caracterAnterior== '5'||
-           caracterAnterior== '6' || caracterAnterior== '7' || caracterAnterior== '8' || caracterAnterior== '9'){
-           convertirNumeroA_Decimal();
-        }
+    }
         liberarMemoria();
         fclose(archivo);
 
