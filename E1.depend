@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1551048480 source:/home/jesfrin/Documentos/CodBlocks/E1/main.c
+	<stdio.h>
+	<stdlib.h>
+	"lista.h"
+	"lecturas.h"
+
+1551046955 /home/jesfrin/Documentos/CodBlocks/E1/lista.h
+	<stdio.h>
+	"elementoDeOperacion.h"
+
+1551046955 /home/jesfrin/Documentos/CodBlocks/E1/elementoDeOperacion.h
+	<stdio.h>
+
+1551202518 source:/home/jesfrin/Documentos/CodBlocks/E1/lecturaDeArchivo.c
+	<stdio.h>
+	<stdlib.h>
+
+1551202551 /home/jesfrin/Documentos/CodBlocks/E1/lecturas.h
+
