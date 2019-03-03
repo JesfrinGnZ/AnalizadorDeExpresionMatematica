@@ -8,5 +8,8 @@ void liberarMemoria();
 void guardarPrimerCaracterDeNumero(char caracter);
 void guardarEnesimoCaracterDeNumero(char caracter);
 void convertirNumeroA_Decimal();
+void crearPilaY_Cola();
+ElementoDeOperacion* crearElemento(char operador,double operando);
 void lecturaDeCaracteres();
+void analizarExpresion(char caracter);
 #endif // lecturas_h

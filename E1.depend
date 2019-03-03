@@ -12,9 +12,28 @@
 1551046955 /home/jesfrin/Documentos/CodBlocks/E1/elementoDeOperacion.h
 	<stdio.h>
 
-1551206048 source:/home/jesfrin/Documentos/CodBlocks/E1/lecturaDeArchivo.c
+1551589948 source:/home/jesfrin/Documentos/CodBlocks/E1/lecturaDeArchivo.c
+	"cola.h"
+	"pila.h"
+	"lecturas.h"
 	<stdio.h>
 	<stdlib.h>
 
-1551202551 /home/jesfrin/Documentos/CodBlocks/E1/lecturas.h
+1551589608 /home/jesfrin/Documentos/CodBlocks/E1/lecturas.h
+
+1551586736 source:/home/jesfrin/Documentos/CodBlocks/E1/cola.c
+	"cola.h"
+	<stdlib.h>
+
+1551586777 /home/jesfrin/Documentos/CodBlocks/E1/cola.h
+	<stdio.h>
+	"elementoDeOperacion.h"
+
+1551579137 /home/jesfrin/Documentos/CodBlocks/E1/pila.h
+	"elementoDeOperacion.h"
+	<stdio.h>
+
+1551579090 source:/home/jesfrin/Documentos/CodBlocks/E1/pila.c
+	"pila.h"
+	<stdlib.h>
 

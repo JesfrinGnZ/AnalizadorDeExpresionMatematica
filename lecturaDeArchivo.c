@@ -1,13 +1,20 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include "cola.h"
+#include "pila.h"
+#include "lecturas.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
 
 char *numeroActual,*copiaDeNumero;
 int tamanoDeNumero=0;
 int hayNumeroPorGuardar=0;
+int cantidadDePuntosDecimales=0;
 char caracteresDeEspacio[] ={'\n','\t','\r',' '};
 char digitos[]= {'0','1','2','3','4','5','6','7','8','9','.'};
 char simbolos[]={'+','-','*','/','(',')'};
-
+Cola* cola;
+Pila* pila;
 
 char buscarSiCaracterEsUnEspacio(char caracter){
     for(int i=0;i<4;i++){
@@ -28,7 +35,7 @@ char buscarSiCaracterEsUnDigito(char caracter){
 }
 
 char buscarSiCaracterEsUnSimbolo(char caracter){
-    for(int i=0;i<4;i++){
+    for(int i=0;i<6;i++){
         if(caracter==simbolos[i]){
             return '1';
         }
@@ -62,36 +69,69 @@ void guardarEnesimoCaracterDeNumero(char caracter){
 }
 
 void convertirNumeroA_Decimal(){
-    printf("Se ha transformado el numero------->%f\n",atof(numeroActual));
+    if(cantidadDePuntosDecimales>1){
+        //Terminar proceso del programa, el numero es erroneo el cual seria numero actual
+        printf("ERROR: El numero leido:%s tiene un formato incorrecto.\n",numeroActual);
+    }else{
+        double numeroConvertido = atof(numeroActual);
+        encolar(cola,crearElemento('@',numeroConvertido));
+        printf("Se ha transformado el numero------->%f\n",numeroConvertido);
+        printf("Final de la cola actual:::::::::::::::::::::::::::::::::%f\n",consultarFinalDeCola(cola)->operando);
+    }
+
     //liberarMemoria();
     tamanoDeNumero=0;
     hayNumeroPorGuardar=0;
+    cantidadDePuntosDecimales=0;
 }
+
+void crearPilaY_Cola(){
+    pila = crearPila();
+    cola = crearCola();
+}
+
 
 void lecturaDeCaracteres(){
     //valor=2;
 	FILE *archivo;
 	char caracter;
 	char caracterAnterior;
-
 	archivo = fopen("prueba.txt","r");
 
 	if (archivo == NULL){
             printf("\nError de apertura del archivo. \n\n");
-    }
-    else{
+    }else{
         printf("\nEl contenido del archivo de prueba es \n\n");
+        crearPilaY_Cola();
         while((caracter = fgetc(archivo)) != EOF){
 		//printf("%c",caracter);
+            analizarExpresion(caracter);
+        }
+    }
+        liberarMemoria();
+        fclose(archivo);
 
+}
+ElementoDeOperacion* crearElemento(char operador,double operando){
+    ElementoDeOperacion * elementoDeOperacion = (ElementoDeOperacion*)malloc(sizeof(ElementoDeOperacion));
+    elementoDeOperacion->operador=operador;
+    elementoDeOperacion->operando=operando;
+    return elementoDeOperacion;
+}
 
-            if(buscarSiCaracterEsUnEspacio(caracter)=='0'){//Caracter no es un espacio
+void analizarExpresion(char caracter){
+     if(buscarSiCaracterEsUnEspacio(caracter)=='0'){//Caracter no es un espacio
                 if(buscarSiCaracterEsUnSimbolo(caracter)=='1'){//Caracter es un simbolo
                     if(hayNumeroPorGuardar==1){//Convertir el numero, colocarlo en la pila, volver valores a su estado inicial
                         convertirNumeroA_Decimal();
                     }
-                    printf("Es un simbolo:%c\n",caracter);//Guardar el simbolo
+                    apilar(pila,crearElemento(caracter,0));
+                    //printf("Tope de pila::::::::::::::::::::::%c\n",cimaDePila(pila)->operador);
+                    //printf("Es un simbolo:%c\n",caracter);//Guardar el simbolo
                 }else{//Caracter es un digito o un punto
+                    if(caracter=='.'){//Para posterior analisis si el numero tiene solo un punto
+                        cantidadDePuntosDecimales++;
+                    }
                     if(tamanoDeNumero==0){
                         guardarPrimerCaracterDeNumero(caracter);
                     }else{
@@ -103,14 +143,7 @@ void lecturaDeCaracteres(){
                     convertirNumeroA_Decimal();
                 }
             }
-
-        }
-    }
-        liberarMemoria();
-        fclose(archivo);
-
 }
-
 
 /*
 void lecturaDeCaracteres(){
