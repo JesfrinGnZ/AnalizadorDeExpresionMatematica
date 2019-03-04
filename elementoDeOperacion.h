@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 typedef struct ElementoDeOperacion{
-    int operando;
+    double operando;
     char operador;
+    int numeroDeFila;
 }ElementoDeOperacion;
 #endif

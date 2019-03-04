@@ -1,0 +1,6 @@
+Formato de numero incorrecto:
+8..2 Fila:1
+
+22.000000
+4.000000
+*
