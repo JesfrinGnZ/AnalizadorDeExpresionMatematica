@@ -119,6 +119,8 @@ void lecturaDeCaracteres(){
         while(cimaDePila(pila)!=NULL && seDebeSeguirAnalizando=='1'){//Pasandp elementos de la pila a EPOS
             if(cimaDePila(pila)->operador=='('){
                 printf("Error no se ha cerrado el parentesis\n");
+                escrituraDeCaracteres("Error.txt","No se ha cerrado el parentesis:\n",'(',0,numeroDeFila);
+                seDebeSeguirAnalizando='0';
             }
             encolar(cola,cimaDePila(pila));
             desapilar(pila);
@@ -186,14 +188,19 @@ void analizarExpresion(char caracter){
                         }
                         if(cimaDePila(pila)==NULL){
                             printf("Error en parentesis:\n");
+                            escrituraDeCaracteres("Error.txt","No se ha abierto el parentesis:\n",')',0,numeroDeFila);
+                            seDebeSeguirAnalizando='0';
                         }else{
                             if(contador==0){
                                 printf("Error en parentesis:\n");
+                                escrituraDeCaracteres("Error.txt","Expresion malformada (",')',0,numeroDeFila);
                                 seDebeSeguirAnalizando='0';
                             }else if(cimaDePila(pila)->operador=='('){
                             desapilar(pila);
                             }else{
                                 printf("Error en parentesis:\n");
+                                escrituraDeCaracteres("Error.txt","No se ha abierto el parentesis:\n",')',0,numeroDeFila);
+                                seDebeSeguirAnalizando='0';
                             }
                         }
                     }else if(caracter=='('){

@@ -1,6 +1,14 @@
-Formato de numero incorrecto:
-8..2 Fila:1
+No se ha abierto el parentesis:
+) Fila 1
 
 22.000000
 4.000000
 *
+8.200000
+34.000000
+*
++
+55.000000
+-
+5.000000
+-
