@@ -1,5 +1,6 @@
 #include "cola.h"
 #include "pila.h"
+#include "lista.h"
 #include "lecturas.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,11 +11,15 @@ char *numeroActual,*copiaDeNumero;
 int tamanoDeNumero=0;
 int hayNumeroPorGuardar=0;
 int cantidadDePuntosDecimales=0;
+int cantidadDeNumeros=0;
 char caracteresDeEspacio[] ={'\n','\t','\r',' '};
 char digitos[]= {'0','1','2','3','4','5','6','7','8','9','.'};
 char simbolos[]={'+','-','*','/','(',')'};
 Cola* cola;
 Pila* pila;
+Pila* pilaEpos;
+Pila* pilaFinal;
+Lista* listaDeNumeros;
 int numeroDeFila=1;
 
 char buscarSiCaracterEsUnEspacio(char caracter){
@@ -77,11 +82,15 @@ void convertirNumeroA_Decimal(){
     if(cantidadDePuntosDecimales>1){
         //Terminar proceso del programa, el numero es erroneo el cual seria numero actual
         printf("ERROR: El numero leido:%s tiene un formato incorrecto.\n",numeroActual);
-        escrituraDeCaracteres("Error.txt","Formato de numero incorrecto:\n",'@',numeroActual,numeroDeFila);
+        escrituraDeCaracteres("Error.txt","Formato de numero incorrecto:",'@',numeroActual,numeroDeFila,0);
         seDebeSeguirAnalizando='0';
     }else{
         double numeroConvertido = atof(numeroActual);
         encolar(cola,crearElemento('@',numeroConvertido));
+        anadirALista(listaDeNumeros,numeroConvertido,cantidadDeNumeros);
+        NodoLista* nodo= buscarNodoEnPosicion(listaDeNumeros,cantidadDeNumeros);
+        realizarMaxHeap(nodo);
+        cantidadDeNumeros++;
         //printf("Se ha transformado el numero------->%f\n",numeroConvertido);
         //printf("Final de la cola actual:::::::::::::::::::::::::::::::::%f\n",consultarFinalDeCola(cola)->operando);
     }
@@ -95,75 +104,10 @@ void convertirNumeroA_Decimal(){
 void crearPilaY_Cola(){
     pila = crearPila();
     cola = crearCola();
+    listaDeNumeros = crearLista();
 }
 
 
-void lecturaDeCaracteres(){
-    //valor=2;
-	FILE *archivo;
-	char caracter;
-	char caracterAnterior;
-	archivo = fopen("prueba.txt","r");
-
-	if (archivo == NULL){
-            printf("\nError de apertura del archivo. \n\n");
-    }else{
-        printf("\nEl contenido del archivo de prueba es \n\n");
-        crearPilaY_Cola();
-        while((caracter = fgetc(archivo)) != EOF && seDebeSeguirAnalizando=='1'){
-		//printf("%c",caracter);
-            analizarExpresion(caracter);
-            printf("SeDebeSeguirAnalizando:%c\n",seDebeSeguirAnalizando);
-        }
-    }
-        while(cimaDePila(pila)!=NULL && seDebeSeguirAnalizando=='1'){//Pasandp elementos de la pila a EPOS
-            if(cimaDePila(pila)->operador=='('){
-                printf("Error no se ha cerrado el parentesis\n");
-                escrituraDeCaracteres("Error.txt","No se ha cerrado el parentesis:\n",'(',0,numeroDeFila);
-                seDebeSeguirAnalizando='0';
-            }
-            encolar(cola,cimaDePila(pila));
-            desapilar(pila);
-        }
-
-        printf("Elementos en cola:");
-        while(consultarCola(cola)!=NULL){
-            if(consultarCola(cola)->operador=='@'){
-                printf("%f ",consultarCola(cola)->operando);
-            }else{
-                printf("%c ",consultarCola(cola)->operador);
-            }
-            eliminarDeCola(cola);
-        }
-        printf("\n");
-        //liberarMemoria();
-        fclose(archivo);
-
-}
-
-void escrituraDeCaracteres(char* nombreDeArchivo,char* mensaje,char caracterDeError,char* numeroDeError,int fila){
-    FILE* flujo = fopen(nombreDeArchivo,"w");
-    if(flujo==NULL){
-        perror("Error en la creacion de archivo\n\n");
-    }else{
-        fprintf(flujo,"%s",mensaje);
-        if(caracterDeError=='@'){
-            fprintf(flujo,"%s Fila:%d\n\n",numeroDeError,fila);
-        }else{
-            fprintf(flujo,"%c Fila %d\n\n",caracterDeError,fila);
-        }
-        while(consultarCola(cola)!=NULL){
-            if(consultarCola(cola)->operador=='@'){
-                fprintf(flujo,"%f\n",consultarCola(cola)->operando);
-            }else{
-                fprintf(flujo,"%c\n",consultarCola(cola)->operador);
-            }
-            eliminarDeCola(cola);
-        }
-        fflush(flujo);
-        fclose(flujo);
-    }
-}
 ElementoDeOperacion* crearElemento(char operador,double operando){
     ElementoDeOperacion * elementoDeOperacion = (ElementoDeOperacion*)malloc(sizeof(ElementoDeOperacion));
     elementoDeOperacion->operador=operador;
@@ -188,18 +132,25 @@ void analizarExpresion(char caracter){
                         }
                         if(cimaDePila(pila)==NULL){
                             printf("Error en parentesis:\n");
-                            escrituraDeCaracteres("Error.txt","No se ha abierto el parentesis:\n",')',0,numeroDeFila);
+                            escrituraDeCaracteres("Error.txt","No se ha abierto el parentesis:",')',0,numeroDeFila,0);
+                            escribirPilaFinal("",0,1);
                             seDebeSeguirAnalizando='0';
                         }else{
+                            /*
                             if(contador==0){
                                 printf("Error en parentesis:\n");
-                                escrituraDeCaracteres("Error.txt","Expresion malformada (",')',0,numeroDeFila);
+                                escrituraDeCaracteres("Error.txt","Expresion malformada (",')',0,numeroDeFila,0);
                                 seDebeSeguirAnalizando='0';
-                            }else if(cimaDePila(pila)->operador=='('){
+                                escribirPilaFinal("",0,1);
+                            }else
+                            */
+
+                             if(cimaDePila(pila)->operador=='('){
                             desapilar(pila);
                             }else{
                                 printf("Error en parentesis:\n");
-                                escrituraDeCaracteres("Error.txt","No se ha abierto el parentesis:\n",')',0,numeroDeFila);
+                                escrituraDeCaracteres("Error.txt","No se ha abierto el parentesis:",')',0,numeroDeFila,0);
+                                escribirPilaFinal("",0,1);
                                 seDebeSeguirAnalizando='0';
                             }
                         }
@@ -236,43 +187,195 @@ void analizarExpresion(char caracter){
             }
 }
 
-
-
-
-/*
-void lecturaDeCaracteres(){
-    float *arrayFl1, *mem;
-    int elementos, q;
-
-    elementos = 6;
-    arrayFl1 = malloc(elementos*sizeof(float));
-    arrayFl1[0] = 0.172;
-    arrayFl1[1] = -0.0717;
-    arrayFl1[2] = 0.2285;
-    arrayFl1[3] = 0.176;
-    arrayFl1[4] = -0.068;
-    arrayFl1[5] = 0.228;
-    for(int i=0;i<elementos;i++){
-        printf("%f\n",arrayFl1[i]);
+double evaluarEpos(){
+    pilaEpos=crearPila();
+    pilaFinal=crearPila();
+    while(consultarCola(cola)!=NULL){
+        if(consultarCola(cola)->operador=='@'){
+            apilar(pilaEpos,consultarCola(cola));//Se apilan los numeros
+            apilar(pilaFinal,consultarCola(cola));//Apilara en pila final
+            eliminarDeCola(cola);
+        }else{
+        ElementoDeOperacion* opearadorEnCola = consultarCola(cola);
+        eliminarDeCola(cola);
+        ElementoDeOperacion* op2 = cimaDePila(pilaEpos);
+        desapilar(pilaEpos);
+        ElementoDeOperacion* op1 = cimaDePila(pilaEpos);
+        desapilar(pilaEpos);
+        if(opearadorEnCola==NULL){//operador->operador=='@'
+            printf("Error falta de signo en fila %d\n",cimaDePila(pilaFinal)->numeroDeFila);
+            escribirPilaFinalEnError("Error falta de operandos",cimaDePila(pilaFinal)->numeroDeFila);
+            seDebeSeguirAnalizando=='0';
+            return 0;
+        }else if(op2==NULL || op1==NULL){
+            printf("Error falta de operandos en fila %d\n",opearadorEnCola->numeroDeFila);            escrituraDeCaracteres("Error.txt","Error falta de signo",'.',0,cimaDePila(pilaFinal)->numeroDeFila,0);
+            escribirPilaFinalEnError("Error falta de operandos",cimaDePila(pilaFinal)->numeroDeFila);
+            seDebeSeguirAnalizando='0';
+            return 0;
+        }else{
+            apilar(pilaFinal,opearadorEnCola);//Apilar signo en pila final
+            double resultado=calcularOperacion(op1->operando,op2->operando,opearadorEnCola->operador);
+            //printf("El resultado es:%f\n",resultado);
+            if(consultarCola(cola)==NULL){
+                //printf("El resultado es:%f\n",resultado);
+                return resultado;
+            }else{
+                apilar(pilaEpos,crearElemento('@',resultado));
+            }
+        }
+        }
+    }
+    return 0;
     }
 
-    elementos++;
-    mem = realloc(arrayFl1, sizeof(float)*elementos);
-    arrayFl1 = mem;
-    arrayFl1[elementos-1] = 1.2345;
 
-    printf("Segunda vuelta\n");
-    for(int i=0;i<elementos;i++){
-        printf("%f\n",arrayFl1[i]);
+double calcularOperacion(double op1,double op2,char operacion){
+    switch(operacion){
+    case '*':
+        return op1*op2;
+        break;
+    case '/':
+        return op1/op2;
+        break;
+    case '+':
+        return op1+op2;
+        break;
+    case '-':
+        return op1-op2;
+        break;
     }
-    free(arrayFl1);
-    free(mem);
-    printf("Tercera vuelta, cambian valores???----> se ha liverado la memoria\n");
-    for(int i=0;i<elementos;i++){
-        printf("%f\n",arrayFl1[i]);
+    return 0;
+}
+
+
+void escribirPilaFinalEnError(char* mensaje,int numeroDeFila){
+    FILE* flujo = fopen("Error.txt","w");
+    if(flujo == NULL){
+        perror("Error en la creacion de archivo\n\n");
+    }else{
+        fprintf(flujo,mensaje);
+        fprintf(flujo,"en fila %d \n PILA...\n",numeroDeFila);
+        while(cimaDePila(pilaFinal)!=NULL){
+            if(cimaDePila(pilaFinal)->operador=='@'){
+                fprintf(flujo,"%f\n",cimaDePila(pilaFinal)->operando);
+            }else{
+                fprintf(flujo,"%c\n",cimaDePila(pilaFinal)->operador);
+            }
+            desapilar(pilaFinal);
+        }
+    }
+
+}
+
+void escribirPilaFinal(char* mensaje,double resultado,int seDebeBorrar){
+    FILE* flujo = fopen("Resultado.txt","w");
+    if(flujo==NULL){
+        perror("Error en la creacion de archivo\n\n");
+    }else if(seDebeBorrar==1){
+        fprintf(flujo,"Ha existido un error, revise el archivo Error.txt para mas informacion");
+    }else{
+        fprintf(flujo,"Resultado %f\n\nPILA...\n\n",resultado);
+        while(cimaDePila(pilaFinal)!=NULL){
+            if(cimaDePila(pilaFinal)->operador=='@'){
+                fprintf(flujo,"%f\n",cimaDePila(pilaFinal)->operando);
+            }else{
+                fprintf(flujo,"%c\n",cimaDePila(pilaFinal)->operador);
+            }
+            desapilar(pilaFinal);
+        }
     }
 }
-*/
+
+void escrituraDeCaracteres(char* nombreDeArchivo,char* mensaje,char caracterDeError,char* numeroDeError,int fila,int seDebeBorrar){
+    FILE* flujo = fopen(nombreDeArchivo,"w");
+    if(flujo==NULL){
+        perror("Error en la creacion de archivo\n\n");
+    }else if(seDebeBorrar==1){
+        fprintf(flujo,"Operacion realizada con exito revisa el archivo Resultado.txt\n");
+    }else{
+        fprintf(flujo,"%s",mensaje);
+        if(caracterDeError=='@'){
+            fprintf(flujo,"%s Fila:%d\n\n",numeroDeError,fila);
+        }else{
+            fprintf(flujo,"%c Fila %d\n\n",caracterDeError,fila);
+        }
+        while(consultarCola(cola)!=NULL){
+            if(consultarCola(cola)->operador=='@'){
+                fprintf(flujo,"%f\n",consultarCola(cola)->operando);
+            }else{
+                fprintf(flujo,"%c\n",consultarCola(cola)->operador);
+            }
+            eliminarDeCola(cola);
+        }
+        fflush(flujo);
+        fclose(flujo);
+    }
+}
+
+void lecturaDeCaracteres(){
+    //valor=2;
+	FILE *archivo;
+	char caracter;
+	archivo = fopen("prueba.txt","r");
+
+	if (archivo == NULL){
+            printf("\nError de apertura del archivo. \n\n");
+    }else{
+        printf("\nEl contenido del archivo de prueba es \n\n");
+        crearPilaY_Cola();
+        while((caracter = fgetc(archivo)) != EOF && seDebeSeguirAnalizando=='1'){
+		//printf("%c",caracter);
+            analizarExpresion(caracter);
+        }
+    }
+        while(cimaDePila(pila)!=NULL && seDebeSeguirAnalizando=='1'){//Pasandp elementos de la pila a EPOS
+            if(cimaDePila(pila)->operador=='('){
+                printf("Error no se ha cerrado el parentesis\n");
+                escrituraDeCaracteres("Error.txt","No se ha cerrado el parentesis:",'(',0,numeroDeFila,0);
+                escribirPilaFinal("",0,1);
+                seDebeSeguirAnalizando='0';
+            }
+            encolar(cola,cimaDePila(pila));
+            desapilar(pila);
+        }
+
+
+        if(seDebeSeguirAnalizando=='1'){
+            printf("EPOS FINALIZADO CON EXITO\n");
+            printf("Evaluando...EPOS\n");
+            double resultado=evaluarEpos();
+            if(seDebeSeguirAnalizando!='0'){
+                if(cimaDePila(pilaEpos)!=NULL){//Error ya que la pila no se ha quedado vacia
+                    int numDeFila =cimaDePila(pilaEpos)->numeroDeFila-1;
+                    printf("EXISTIO UN ERROR...numeros sin operacion en fila:%d\n",numDeFila);
+                    escribirPilaFinal("",0,1);
+                    escribirPilaFinalEnError("Error numeros sin opearacion ",numDeFila);
+                }else{
+                    printf("Analisis concluido con exito.El resultado es:%f",resultado);
+                    escrituraDeCaracteres("Error.txt","hh",'@',"ff",numeroDeFila,1);
+                    escribirPilaFinal("El resultado es:",resultado,0);
+                }
+            }
+        }
+
+        recorrerLista(listaDeNumeros);
+        //liberarMemoria();
+        fclose(archivo);
+
+}
+
+
+void realizarMaxHeap(NodoLista* nodoAnalizado){
+    int posicionDePadre = cantidadDeNumeros-1;
+    while(nodoAnalizado->posicion!=0 && nodoAnalizado->numero>buscarNodoEnPosicion(listaDeNumeros,posicionDePadre)->numero){
+        double numeroNodoPadre=buscarNodoEnPosicion(listaDeNumeros,posicionDePadre)->numero;
+        double numeroNodoHijo=nodoAnalizado->numero;
+        nodoAnalizado->numero=numeroNodoPadre;
+        buscarNodoEnPosicion(listaDeNumeros,posicionDePadre)->numero=numeroNodoHijo;
+        nodoAnalizado=buscarNodoEnPosicion(listaDeNumeros,posicionDePadre);
+        posicionDePadre--;
+    }
+}
 
 
 

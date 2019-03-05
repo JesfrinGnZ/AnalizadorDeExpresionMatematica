@@ -1,14 +1,1 @@
-No se ha abierto el parentesis:
-) Fila 1
-
-22.000000
-4.000000
-*
-8.200000
-34.000000
-*
-+
-55.000000
--
-5.000000
--
+Operacion realizada con exito revisa el archivo Resultado.txt
