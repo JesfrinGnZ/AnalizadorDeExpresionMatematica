@@ -1,18 +1,18 @@
 # depslib dependency file v1.0
-1551048480 source:/home/jesfrin/Documentos/CodBlocks/E1/main.c
+1551853620 source:/home/jesfrin/Documentos/CodBlocks/E1/main.c
 	<stdio.h>
 	<stdlib.h>
 	"lista.h"
 	"lecturas.h"
 
-1551807257 /home/jesfrin/Documentos/CodBlocks/E1/lista.h
+1551853705 /home/jesfrin/Documentos/CodBlocks/E1/lista.h
 	<stdio.h>
 	"elementoDeOperacion.h"
 
-1551642082 /home/jesfrin/Documentos/CodBlocks/E1/elementoDeOperacion.h
+1551853705 /home/jesfrin/Documentos/CodBlocks/E1/elementoDeOperacion.h
 	<stdio.h>
 
-1551809980 source:/home/jesfrin/Documentos/CodBlocks/E1/lecturaDeArchivo.c
+1551853620 source:/home/jesfrin/Documentos/CodBlocks/E1/lecturaDeArchivo.c
 	"cola.h"
 	"pila.h"
 	"lista.h"
@@ -20,25 +20,25 @@
 	<stdio.h>
 	<stdlib.h>
 
-1551793710 /home/jesfrin/Documentos/CodBlocks/E1/lecturas.h
+1551853705 /home/jesfrin/Documentos/CodBlocks/E1/lecturas.h
 
-1551586736 source:/home/jesfrin/Documentos/CodBlocks/E1/cola.c
+1551853540 source:/home/jesfrin/Documentos/CodBlocks/E1/cola.c
 	"cola.h"
 	<stdlib.h>
 
-1551586777 /home/jesfrin/Documentos/CodBlocks/E1/cola.h
+1551853705 /home/jesfrin/Documentos/CodBlocks/E1/cola.h
 	<stdio.h>
 	"elementoDeOperacion.h"
 
-1551579137 /home/jesfrin/Documentos/CodBlocks/E1/pila.h
+1551853702 /home/jesfrin/Documentos/CodBlocks/E1/pila.h
 	"elementoDeOperacion.h"
 	<stdio.h>
 
-1551579090 source:/home/jesfrin/Documentos/CodBlocks/E1/pila.c
+1551853620 source:/home/jesfrin/Documentos/CodBlocks/E1/pila.c
 	"pila.h"
 	<stdlib.h>
 
-1551809462 source:/home/jesfrin/Documentos/CodBlocks/E1/lista.c
+1551853620 source:/home/jesfrin/Documentos/CodBlocks/E1/lista.c
 	"lista.h"
 	<stdlib.h>
 

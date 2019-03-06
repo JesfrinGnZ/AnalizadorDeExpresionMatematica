@@ -1,3 +1,10 @@
+//
+//lista.c
+//Jesfrin Gonzalez 05/02/19
+//201630978 Estrucutura de datos
+//
+
+
 #include "lista.h"
 #include <stdlib.h>
 

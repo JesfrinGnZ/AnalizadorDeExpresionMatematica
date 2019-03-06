@@ -1,3 +1,9 @@
+//
+//lecturas.h
+//Jesfrin Gonzalez 05/02/19
+//201630978 Estrucutura de datos
+//
+
 #ifndef lecturas_h
 #define lecturas_h
 
@@ -16,6 +22,7 @@ double evaluarEpos();
 double calcularOperacion(double op1,double op2,char operacion);
 void lecturaDeCaracteres();
 void escribirPilaFinalEnError(char* mensaje,int numeroDeFila);
-void escribirPilaFinal(char* mensaje,double resultado,int seDebeBorrar);
+void escribirPilaFinal(char* mensaje,double resultado,int seDebeBorrar,double numeroMayor,double numeroMenor);
 void escrituraDeCaracteres(char* nombreDeArchivo,char* mensaje,char caracterDeError,char* numeroDeError,int fila,int seDebeBorrar);
+void realizarMinHeap(NodoLista* nodoAnalizado);
 #endif // lecturas_h

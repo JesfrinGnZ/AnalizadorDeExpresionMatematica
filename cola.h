@@ -1,3 +1,9 @@
+//
+//cola.h
+//Jesfrin Gonzalez 05/02/19
+//201630978 Estrucutura de datos
+//
+
 #ifndef cola_h
 #define cola_h
 

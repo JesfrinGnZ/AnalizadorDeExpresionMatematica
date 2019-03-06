@@ -1,5 +1,12 @@
+//
+//lista.h
+//Jesfrin Gonzalez 05/02/19
+//201630978 Estrucutura de datos
+//
+
 #ifndef lista_h
 #define lista_h
+
 
 #include <stdio.h>
 #include "elementoDeOperacion.h"

@@ -1,3 +1,8 @@
+//
+//cola.c
+//Jesfrin Gonzalez 05/02/19
+//201630978 Estrucutura de datos
+//
 #include "cola.h"
 #include <stdlib.h>
 

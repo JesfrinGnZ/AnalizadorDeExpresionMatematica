@@ -1,3 +1,9 @@
+//
+//pila.h
+//Jesfrin Gonzalez 05/02/19
+//201630978 Estrucutura de datos
+//
+
 #ifndef pila_h
 #define pila_h
 
